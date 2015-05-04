@@ -1,2 +1,2 @@
-# coursera-datascicne-04-expl_data_analys
+# coursera-datascience-04-exploratory_data_analysis
 Course Projects (1 &amp; 2) for Coursera: Exploratory Data Analysis
