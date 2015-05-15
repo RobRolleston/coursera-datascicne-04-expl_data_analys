@@ -1,4 +1,5 @@
 #
+require(dplyr)
 
 if (file.exists("data.codes.RData")) {
   load("data.codes.RData")
@@ -14,10 +15,22 @@ if (file.exists("data.summary.RData")) {
   data.summary$year <- as.factor(data.summary$year)
   save(data.summary, file="data.summary.RData")
 }
+
+data.summary.dplyr <- tbl_df(data.summary)
 ################-1
 #Have total emissions from PM2.5 decreased in the United States from 1999 to 2008? 
 #Using the base plotting system, make a plot showing the total PM2.5 emission from 
 #all sources for each of the years 1999, 2002, 2005, and 2008.
+summary.allByYear <- data.summary.dplyr %>% 
+  group_by(year) %>% summarise(total = sum(Emissions))
+#totalByYear <- table(as.numeric(levels(summary.allByYear$year)), summary.allByYear$total)
+foo <- matrix(c(as.numeric(levels(summary.allByYear$year)), summary.allByYear$total),
+  nrow=2, ncol=4, byrow=TRUE)
+barplot(foo)
+plot(as.numeric(levels(summary.allByYear$year)), summary.allByYear$total, 
+     type="l", xlab="Year", ylab="Total Emissions", main="Total Emmisions per Year",
+     xlim=c(1999,2008))
+
 
 ################-2
 #Have total emissions from PM2.5 decreased in the Baltimore City, Maryland (fips == "24510") 
