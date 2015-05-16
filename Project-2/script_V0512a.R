@@ -21,20 +21,32 @@ data.summary.dplyr <- tbl_df(data.summary)
 #Have total emissions from PM2.5 decreased in the United States from 1999 to 2008? 
 #Using the base plotting system, make a plot showing the total PM2.5 emission from 
 #all sources for each of the years 1999, 2002, 2005, and 2008.
+if (FALSE) {
 summary.allByYear <- data.summary.dplyr %>% 
   group_by(year) %>% summarise(total = sum(Emissions))
-#totalByYear <- table(as.numeric(levels(summary.allByYear$year)), summary.allByYear$total)
-foo <- matrix(c(as.numeric(levels(summary.allByYear$year)), summary.allByYear$total),
-  nrow=2, ncol=4, byrow=TRUE)
-barplot(foo)
-plot(as.numeric(levels(summary.allByYear$year)), summary.allByYear$total, 
-     type="l", xlab="Year", ylab="Total Emissions", main="Total Emmisions per Year",
-     xlim=c(1999,2008))
-
+x <- levels(summary.allByYear$year)
+y <- summary.allByYear$total
+barplot(matrix(c(x,y), nrow=2, byrow=TRUE), 
+        xlab="Year", names.arg=x,
+        ylab="Total Emisssion",
+        main="Total PM2.5 Emisssion per year",
+        axes=TRUE, axis.lty = "solid")
+}
 
 ################-2
 #Have total emissions from PM2.5 decreased in the Baltimore City, Maryland (fips == "24510") 
 #from 1999 to 2008? Use the base plotting system to make a plot answering this question.
+summary.Baltimore <- data.summary.dplyr %>% 
+  filter(fips == "24510") %>%
+  group_by(year) %>% summarise(total = sum(Emissions))
+x <- levels(summary.Baltimore$year)
+y <- summary.Baltimore$total
+barplot(matrix(c(x,y), nrow=2, byrow=TRUE), 
+        xlab="Year", names.arg=x,
+        ylab="Total Emisssion",
+        main="Baltimore PM2.5 Emisssion per year",
+        axes=TRUE, axis.lty = "solid")
+
 
 ################-3
 #Of the four types of sources indicated by the type (point, nonpoint, onroad, nonroad) variable, 
