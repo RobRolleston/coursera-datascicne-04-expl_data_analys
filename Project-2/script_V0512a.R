@@ -30,6 +30,8 @@ y <- summary.allByYear$total
 barplot(y, ylab="Total Emisssion",
         xlab="Year", names.arg=x,
         main="Total PM2.5 Emisssion per year" )
+mod.allByYear <- lm(y ~ seq(1:4))
+abline(mod.allByYear, lwd=2)
 
 ################-2
 #Have total emissions from PM2.5 decreased in the Baltimore City, Maryland (fips == "24510") 
@@ -42,6 +44,8 @@ y <- summary.BaltimoreByYear$total
 barplot(y, ylab="Baltimore Total",
         xlab="Year", names.arg=x,
         main=" Emisssion per year in Baltimore")
+mod.allByYear <- lm(y ~ seq(1:4))
+abline(mod.allByYear, lwd=2)
 
 
 ################-3
@@ -55,8 +59,14 @@ summary.BaltimoreEachType <- data.summary.dplyr %>%
 p <- ggplot(data=summary.BaltimoreEachType, 
             aes(x = year,y = total)) +
   geom_bar(stat="identity") +
-  facet_wrap(~type)
+  geom_smooth(method="lm", se=FALSE, aes(group=type)) +
+  facet_wrap(~type, scales="free_y")
 p
+
+# ggplot(data=summary.BaltimoreByYear,aes(x = levels(year),y = total)) +
+#   #geom_point() +
+#   geom_bar(stat="identity") +
+#   stat_smooth(method="lm", se=FALSE, aes(group=1))
 
 ################-4
 #Across the United States, how have emissions from 
