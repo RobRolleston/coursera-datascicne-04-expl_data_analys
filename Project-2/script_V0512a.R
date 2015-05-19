@@ -2,13 +2,18 @@
 require(dplyr)
 require(ggplot2)
 
-if (!exists("data.codes") && file.exists("data.codes.RData")) {
+if (exists("data.codes")) {
+  # the data.codes object is ready to go
+} else if(file.exists("data.codes.RData")) {
   load("data.codes.RData")
 } else {
   data.codes <- readRDS("Source_Classification_Code.rds")
   save(data.codes, file="data.codes.RData")
 }
-if (!exists("data.summary") && file.exists("data.summary.RData")) {
+
+if (exists("data.summary")) {
+  # the data.summary object is ready to go
+} else if(file.exists("data.summary.RData")) {
   load("data.summary.RData")
 } else {
   data.summary <- readRDS("summarySCC_PM25.rds")
@@ -17,6 +22,7 @@ if (!exists("data.summary") && file.exists("data.summary.RData")) {
   data.summary$Pollutant <- as.factor(data.summary$Pollutant)
   save(data.summary, file="data.summary.RData")
 }
+
 
 data.summary.dplyr <- tbl_df(data.summary)
 
@@ -31,8 +37,10 @@ y <- summary.allByYear$total
 barplot(y, ylab="Total Emisssion",
         xlab="Year", names.arg=x,
         main="(1): Total PM2.5 Emisssion per year" )
-mod.allByYear <- lm(y ~ seq(1:4))
-abline(mod.allByYear, lwd=2)
+#mod.allByYear <- lm(y ~ seq(1:4))
+#abline(mod.allByYear, lwd=2)
+dev.copy(png, file="plot1.png", width=480, height=480)
+dev.off()
 rm(summary.allByYear, x, y, mod.allByYear)
 
 ################-2
@@ -46,8 +54,10 @@ y <- summary.BaltimoreByYear$total
 barplot(y, ylab="Baltimore Total",
         xlab="Year", names.arg=x,
         main="(2): Emisssion per year in Baltimore")
-mod.allByYear <- lm(y ~ seq(1:4))
-abline(mod.allByYear, lwd=2)
+#mod.allByYear <- lm(y ~ seq(1:4))
+#abline(mod.allByYear, lwd=2)
+dev.copy(png, file="plot2.png", width=480, height=480)
+dev.off()
 rm(summary.BaltimoreByYear, x, y, mod.allByYear)
 
 ################-3
@@ -60,11 +70,12 @@ summary.BaltimoreEachType <- data.summary.dplyr %>%
   group_by(type, year) %>% summarise(total = sum(Emissions))
 ggplot(data=summary.BaltimoreEachType, aes(x = year,y = total)) +
   geom_bar(stat="identity") +
-  geom_smooth(method="lm", se=FALSE, aes(group=type)) +
+#  geom_smooth(method="lm", se=FALSE, aes(group=type)) +
   facet_wrap(~type, scales="free_y") +
   ggtitle("(3): Baltimore Emissions by Type")
-
-rm(summary.BaltimoreEachType, p)
+dev.copy(png, file="plot3.png", width=480, height=480)
+dev.off()
+rm(summary.BaltimoreEachType)
 
 # ggplot(data=summary.BaltimoreByYear,aes(x = levels(year),y = total)) +
 #   #geom_point() +
@@ -89,8 +100,10 @@ y <- summary.CombCoal$total
 barplot(y, ylab="Total Coal Combustion",
         xlab="Year", names.arg=x,
         main="(4): US Coal Combustion Emisssion per year" )
-mod.allByYear <- lm(y ~ seq(1:4))
-abline(mod.allByYear, lwd=2)
+#mod.allByYear <- lm(y ~ seq(1:4))
+#abline(mod.allByYear, lwd=2)
+dev.copy(png, file="plot4.png", width=480, height=480)
+dev.off()
 rm(selectedRows, summary.CombCoal, x, y, mod.allByYear)
 
 ################-5
@@ -112,8 +125,10 @@ y <- summary.BaltimoreOnlyVehicles$total
 barplot(y, ylab="Total Vehicle Emisssions",
         xlab="Year", names.arg=x,
         main="(5): Baltimore Vehicle Emisssion per year" )
-mod.allByYear <- lm(y ~ seq(1:4))
-abline(mod.allByYear, lwd=2)
+#mod.allByYear <- lm(y ~ seq(1:4))
+#abline(mod.allByYear, lwd=2)
+dev.copy(png, file="plot5.png", width=480, height=480)
+dev.off()
 rm(selectedRows, summary.BaltimoreOnly, summary.BaltimoreOnlyVehicles, x, y, mod.allByYear)
 
 ################-6
@@ -130,9 +145,10 @@ summary.BaltLAOnlyVehicles <- summary.BaltLAOnly %>%
   group_by(fips, year) %>% summarise(total = sum(Emissions))
 ggplot(data=summary.BaltLAOnlyVehicles, aes(x = year,y = total)) +
   geom_bar(stat="identity") +
-  geom_smooth(method="lm", se=FALSE, aes(group=fips)) +
+#  geom_smooth(method="lm", se=FALSE, aes(group=fips)) +
   facet_wrap(~fips, scales="free_y") +
   ggtitle("(6): Baltimore(24510) and LA(06037) Vehicle Emissions")
-
-rm(selectedRows, summary.BaltLAOnly, summary.BaltLAOnlyVehicles, p)
+dev.copy(png, file="plot6.png", width=480, height=480)
+dev.off()
+rm(selectedRows, summary.BaltLAOnly, summary.BaltLAOnlyVehicles)
 
